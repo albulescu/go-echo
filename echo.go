@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"reflect"
 )
 
 // hub maintains the set of active connections and broadcasts messages to the
@@ -18,13 +19,18 @@ type hub struct {
 	connections map[*connection]bool
 
 	// Inbound messages from the connections.
-	broadcast chan []byte
+	broadcast chan *BroadcastMessage
 
 	// Register requests from the connections.
 	register chan *connection
 
 	// Unregister requests from connections.
 	unregister chan *connection
+}
+
+type BroadcastMessage struct {
+	Bytes []byte
+	Conn  *connection
 }
 
 type connection struct {
@@ -35,7 +41,7 @@ type connection struct {
 }
 
 var h = hub{
-	broadcast:   make(chan []byte),
+	broadcast:   make(chan *BroadcastMessage),
 	register:    make(chan *connection),
 	unregister:  make(chan *connection),
 	connections: make(map[*connection]bool),
@@ -54,10 +60,15 @@ func (h *hub) run() {
 			}
 			go log.Print("Unregister")
 		case m := <-h.broadcast:
-			go log.Print("Broadcast:", m)
 			for c := range h.connections {
+
+				if reflect.DeepEqual(c, m.Conn) {
+					log.Print("Skip me from broadcasting")
+					continue
+				}
+
 				select {
-				case c.send <- m:
+				case c.send <- m.Bytes:
 				default:
 					close(c.send)
 					delete(h.connections, c)
@@ -89,7 +100,12 @@ func (c *connection) readPump() {
 
 		log.Print("Read:", string(buf[:n]))
 
-		h.broadcast <- buf[:n]
+		message := BroadcastMessage{
+			buf[:n],
+			c,
+		}
+
+		h.broadcast <- &message
 	}
 }
 
