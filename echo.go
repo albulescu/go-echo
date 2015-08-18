@@ -2,9 +2,6 @@ package main
 
 import (
 	"flag"
-)
-
-import (
 	"fmt"
 	"log"
 	"net"
