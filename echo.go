@@ -1,12 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"reflect"
+)
+
+var (
+	skipMe *bool
 )
 
 // hub maintains the set of active connections and broadcasts messages to the
@@ -59,7 +65,7 @@ func (h *hub) run() {
 		case m := <-h.broadcast:
 			for c := range h.connections {
 
-				if reflect.DeepEqual(c, m.Conn) {
+				if *skipMe && reflect.DeepEqual(c, m.Conn) {
 					log.Print("Skip me from broadcasting")
 					continue
 				}
@@ -85,20 +91,20 @@ func (c *connection) readPump() {
 		log.Print("Close socket on readPump")
 	}()
 
-	var buf = make([]byte, 1024)
+	connbuf := bufio.NewReader(c.socket)
 
 	for {
 
-		n, ok := c.socket.Read(buf)
+		str, ok := connbuf.ReadString('\n')
 
 		if ok != nil {
 			break
 		}
 
-		log.Print("Read:", string(buf[:n]))
+		log.Print("Read:", str)
 
 		message := BroadcastMessage{
-			buf[:n],
+			[]byte(str),
 			c,
 		}
 
@@ -126,7 +132,7 @@ func (c *connection) writePump() {
 				return
 			}
 
-			log.Print("Broadcast:", message)
+			log.Print("Broadcast:", string(message))
 		}
 	}
 }
@@ -145,9 +151,34 @@ func handle(s net.Conn) {
 	c.readPump()
 }
 
+func info(w http.ResponseWriter, r *http.Request) {
+
+	if r.URL.Path != "/info" {
+		http.Error(w, "Not found", 404)
+		return
+	}
+	if r.Method != "GET" {
+		http.Error(w, "Method not allowed", 405)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	connLen := len(h.connections)
+
+	info := fmt.Sprintf("Connections: %s", connLen)
+
+	w.Write([]byte(info))
+
+	w.WriteHeader(200)
+}
+
 func main() {
 
 	port := flag.String("bind", "", "Bind address :9999 or localhost:9999")
+	skipMe = flag.Bool("skipme", true, "Skip me from broadcasting")
+	portInfo := flag.String("bindinfo", "", "Bind address :9991 or localhost:9999")
+
 	flag.Parse()
 
 	if *port == "" {
@@ -161,7 +192,16 @@ func main() {
 		panic("Fail to listen")
 	}
 
+	if *skipMe {
+		log.Print("Skip me from broadcasting is ON")
+	} else {
+		log.Print("Skip me from broadcasting is OFF")
+	}
+
 	go h.run()
+
+	http.HandleFunc("/info", info)
+	go http.ListenAndServe(*portInfo, nil)
 
 	for {
 		conn, err := ln.Accept()
