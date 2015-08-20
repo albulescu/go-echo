@@ -61,13 +61,13 @@ func (h *hub) run() {
 		select {
 		case c := <-h.register:
 			h.connections[c] = true
-			go log.Print("Register")
+			log.Print("Register")
 		case c := <-h.unregister:
 			if _, ok := h.connections[c]; ok {
 				delete(h.connections, c)
 				close(c.send)
 			}
-			go log.Print("Unregister")
+			log.Print("Unregister")
 		case m := <-h.broadcast:
 			for c := range h.connections {
 
