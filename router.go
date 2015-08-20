@@ -12,6 +12,8 @@ type ResponseError struct {
 	Code    int    `json:"code"`
 }
 
+type EndpointHandler func(request Request, response Response)
+
 type Request struct {
 	httpRequest *http.Request
 }
@@ -25,8 +27,13 @@ type Response struct {
 }
 
 func (r *Response) Success(data interface{}, code int) {
-	//TODO: r.writter.Write([]byte(data))
+	jsonResponse, err := json.Marshal(data)
 	r.StatusCode(code)
+	if err == nil {
+		r.writter.Write(jsonResponse)
+	} else {
+		log.Print("Fail to encode json", err)
+	}
 }
 
 func (r *Response) StatusCode(code int) {
@@ -51,7 +58,9 @@ func (r *Response) Error(message string, code int, statusCode int) {
 	r.writter.Write(jsonResponse)
 }
 
-type EndpointHandler func(request Request, response Response)
+/**
+ * Router class used to keep and execute matched route
+ */
 
 type Router struct {
 	endpoints map[string]EndpointHandler
@@ -94,10 +103,7 @@ func HttpApiHandle(rw http.ResponseWriter, hr *http.Request) {
 		return
 	}
 
-	request := Request{hr}
-	response := Response{rw}
-
-	endpointHandler(request, response)
+	endpointHandler(Request{hr}, Response{rw})
 }
 
 /**
@@ -106,10 +112,12 @@ func HttpApiHandle(rw http.ResponseWriter, hr *http.Request) {
 func ApiRouterInit() {
 
 	router.Init()
+
+	//map endpoints
 	router.Map("/api/info", "GET", ApiInfo)
 	router.Map("/api/auth", "POST", ApiAuth)
 
+	//handle socket
 	http.HandleFunc("/api/", HttpApiHandle)
-
 	http.ListenAndServe(configApi.BindAddress, nil)
 }
