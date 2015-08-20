@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 /**
  * Provide informations about the connections
  * by accessing the /info route on the bind port

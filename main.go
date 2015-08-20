@@ -7,10 +7,6 @@ import (
 	"reflect"
 )
 
-var (
-	skipMe *bool
-)
-
 // hub maintains the set of active connections and broadcasts messages to the
 // connections.
 type hub struct {
@@ -67,7 +63,7 @@ func (h *hub) run() {
 		case m := <-h.broadcast:
 			for c := range h.connections {
 
-				if *skipMe && reflect.DeepEqual(c, m.Conn) {
+				if configSocket.SkipMe && reflect.DeepEqual(c, m.Conn) {
 					log.Print("Skip me from broadcasting")
 					continue
 				}

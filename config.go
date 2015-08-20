@@ -14,6 +14,8 @@ import (
 type SocketConfiguration struct {
 	// Specify bind address for web socket
 	BindAddress string `ini:"bind"`
+
+	SkipMe bool `ini:"skipme"`
 }
 
 type ApiConfiguration struct {
