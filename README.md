@@ -13,6 +13,13 @@ After setup please follow theese steps:
  
  4. ```git pull origin master```
 
+### Dependinces
+
+1. Download go https://golang.org/dl/
+
+2. ```sudo apt-get install build-essential``` ( for *make* )
+
+
 ## Build & Run
 To build the project execute **```make build```** and this will create the binary files in $GOPATH/bin.
 Also if you just want to test the application execute **```make run```**. For more informations about available tasks view *Makefile*
