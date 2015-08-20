@@ -158,11 +158,18 @@ func main() {
 
 	InitConfig()
 
+	InitLog()
+
+	InitMongo()
+
 	ln, err := net.Listen("tcp", configSocket.BindAddress)
 
 	if err != nil {
-		panic("Fail to listen")
+		die("Fail to listen")
 	}
+
+	socketLog.Print("Socket started on")
+	apiLog.Print("Api started")
 
 	go h.run()
 	go ApiRouterInit()
