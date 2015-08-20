@@ -26,7 +26,7 @@ var configApi = new(ApiConfiguration)
 
 func InitConfig() {
 
-	var configFileFlag = flag.String("config", "/etc/iapp/ows.ini", "Config file")
+	var configFileFlag = flag.String("config", "/etc/iapp/iapp.ini", "Config file")
 	flag.Parse()
 
 	configFile, err := filepath.Abs(*configFileFlag)
