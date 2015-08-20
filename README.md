@@ -20,12 +20,17 @@ Also if you just want to test the application execute **```make run```**. For mo
 ## Servers
 
 **Broadcast me enabled**
+
 iapp.digiedutm.com:9000
+
 iapp.digiedutm.com:9001/info
 
 **Broadcast me disabled**
+
 iapp.digiedutm.com:9002
+
 iapp.digiedutm.com:9003/info
+
 
 ## Contribution
 If you want to create a feature just create the branch from master with name convention **feature/XXX-some-description**. When the feature is done create a pull request in master.
