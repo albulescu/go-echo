@@ -42,3 +42,7 @@ This flow is also for **bug/XXX-some-description**.
 Before create pull request make sure you pulled the master branch and all conflicts are merged.
 
 Please request developer access to cosmin.albulescu@digital-education.com using the subject: **IAPP DEVELOPER**
+
+### Bugs
+
+If you found any bug please report it at https://bitbucket.org/digital_education/iapp-backend/issues
