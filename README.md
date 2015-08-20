@@ -21,3 +21,5 @@ Also if you just want to test the application execute **```make run```**. For mo
 If you want to create a feature just create the branch from master with name convention **feature/XXX-some-description**. When the feature is done create a pull request in master.
 This flow is also for **bug/XXX-some-description**.
 Before create pull request make sure you pulled the master branch and all conflicts are merged.
+
+Please request developer access to cosmin.albulescu@digital-education.com using the subject: **IAPP DEVELOPER**
