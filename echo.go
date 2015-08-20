@@ -37,12 +37,18 @@ type BroadcastMessage struct {
 }
 
 type connection struct {
-	// The websocket connection.
+	// The socket connection.
 	socket net.Conn
 	// Buffered channel of outbound messages.
 	send chan []byte
 }
 
+/**
+ * This class handles the connections registrations/deregestration
+ * broadcasting messaging and other stuff. This is mostly like an
+ * event bus for wiring the communication between sockets
+ */
+ 
 var h = hub{
 	broadcast:   make(chan *BroadcastMessage),
 	register:    make(chan *connection),
@@ -81,7 +87,9 @@ func (h *hub) run() {
 	}
 }
 
-// readPump pumps messages from the websocket connection to the hub.
+/**
+ * Pumps messages from the socket connection to the hub.
+ */
 func (c *connection) readPump() {
 
 	defer func() {
@@ -112,13 +120,16 @@ func (c *connection) readPump() {
 	}
 }
 
-// writePump pumps messages from the hub to the websocket connection.
+/**
+ * Pumps messages from the hub to the socket connection.
+ */
 func (c *connection) writePump() {
 
 	defer func() {
 		log.Print("Close socket")
 		c.socket.Close()
 	}()
+	
 	for {
 		select {
 		case message, ok := <-c.send:
@@ -151,6 +162,10 @@ func handle(s net.Conn) {
 	c.readPump()
 }
 
+/**
+ * Provide informations about the connections
+ * by accessing the /info route on the bind port
+ */
 func info(w http.ResponseWriter, r *http.Request) {
 
 	if r.URL.Path != "/info" {
@@ -177,7 +192,7 @@ func main() {
 
 	port := flag.String("bind", "", "Bind address :9999 or localhost:9999")
 	skipMe = flag.Bool("skipme", true, "Skip me from broadcasting")
-	portInfo := flag.String("bindinfo", "", "Bind address :9991 or localhost:9999")
+	portInfo := flag.String("bindinfo", "", "Bind address for informations about memory :9991 or localhost:9999")
 
 	flag.Parse()
 
