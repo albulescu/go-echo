@@ -31,7 +31,11 @@ iapp.digiedutm.com:9002
 
 iapp.digiedutm.com:9003/info
 
+### Hosting
 
+Hosting is provided by amazon on eu-central-1b zone ( Frankfurt ) and EC2 instance name is ( DIGIEDU INTERNAL APP ) and id [i-098af5c8](https://eu-central-1.console.aws.amazon.com/ec2/v2/home?region=eu-central-1)
+
+For machine access please contact cosmin.albulescu@digital-education.com
 ## Contribution
 If you want to create a feature just create the branch from master with name convention **feature/XXX-some-description**. When the feature is done create a pull request in master.
 This flow is also for **bug/XXX-some-description**.
