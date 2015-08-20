@@ -4,10 +4,14 @@
 In order to start development on this project you need to follow the golang project structure and setup ( https://golang.org/doc/code.html ).
 
 After setup please follow theese steps:
-1. Go to $GOPATH
-2. ```mkdir -p src/digiedu/iapp/main && cd src/digiedu/iapp/main```
-3. ```git init . && git remote add origin git@bitbucket.org:digital_education/iapp-backend.git```
-4. ```git pull origin master```
+
+ 1. Go to $GOPATH
+
+ 2. ```mkdir -p src/digiedu/iapp/main && cd src/digiedu/iapp/main```
+
+ 3. ```git init . && git remote add origin git@bitbucket.org:digital_education/iapp-backend.git```
+ 
+ 4. ```git pull origin master```
 
 ## Build & Run
 To build the project execute **```make build```** and this will create the binary files in $GOPATH/bin.
