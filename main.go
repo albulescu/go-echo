@@ -168,8 +168,7 @@ func main() {
 		die("Fail to listen")
 	}
 
-	socketLog.Print("Socket started on")
-	apiLog.Print("Api started")
+	socketLog.Print("Socket started")
 
 	go h.run()
 	go ApiRouterInit()

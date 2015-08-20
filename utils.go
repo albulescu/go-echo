@@ -26,8 +26,7 @@ func InitLog() {
 	if err != nil {
 		die("Fail to open socket log file")
 	} else {
-		defer sockFile.Close()
-		socketLog = log.New(sockFile, ":", log.Ldate)
+		socketLog = log.New(sockFile, "", log.Ldate|log.Ltime)
 	}
 
 	apiFile, err := os.OpenFile(configApi.LogFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0700)
@@ -35,8 +34,7 @@ func InitLog() {
 	if err != nil {
 		die("Fail to open api log file")
 	} else {
-		defer apiFile.Close()
-		apiLog = log.New(apiFile, ":", log.Ldate)
+		apiLog = log.New(apiFile, "", log.Ldate|log.Ltime)
 	}
 }
 
