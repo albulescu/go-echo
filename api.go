@@ -11,15 +11,6 @@ import (
  * @route /api/info
  */
 func ApiInfo(request Request, response Response) {
-	/*
-		connLen := len(h.connections)
-
-		info := fmt.Sprintf("Connections: %s", connLen)
-
-		w.Write([]byte(info))
-
-		w.WriteHeader(200)*/
-
 	response.Error("Not implemented", 0, 500)
 }
 
@@ -32,5 +23,5 @@ func ApiInfo(request Request, response Response) {
  * @route /api/auth
  */
 func ApiAuth(request Request, response Response) {
-	fmt.Print("ApiAuth")
+	response.Error("Not implemented", 0, 500)
 }
