@@ -1,1 +1,4 @@
 echo
+config.ini
+socket.log
+api.log

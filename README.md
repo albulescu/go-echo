@@ -20,8 +20,10 @@ After setup please follow theese steps:
  2. ```mkdir -p src/digiedu/iapp/main && cd src/digiedu/iapp/main```
 
  3. ```git init . && git remote add origin git@bitbucket.org:digital_education/iapp-backend.git```
- 
+
  4. ```git pull origin master```
+
+ 5. Copy config-example.ini to config.ini and edit for your use
 
 
 ## Build & Run

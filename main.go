@@ -2,17 +2,9 @@ package main
 
 import (
 	"bufio"
-	"flag"
-	"fmt"
 	"log"
 	"net"
-	"net/http"
-	"os"
 	"reflect"
-)
-
-var (
-	skipMe *bool
 )
 
 // hub maintains the set of active connections and broadcasts messages to the
@@ -48,7 +40,7 @@ type connection struct {
  * broadcasting messaging and other stuff. This is mostly like an
  * event bus for wiring the communication between sockets
  */
- 
+
 var h = hub{
 	broadcast:   make(chan *BroadcastMessage),
 	register:    make(chan *connection),
@@ -71,7 +63,7 @@ func (h *hub) run() {
 		case m := <-h.broadcast:
 			for c := range h.connections {
 
-				if *skipMe && reflect.DeepEqual(c, m.Conn) {
+				if configSocket.SkipMe && reflect.DeepEqual(c, m.Conn) {
 					log.Print("Skip me from broadcasting")
 					continue
 				}
@@ -129,7 +121,7 @@ func (c *connection) writePump() {
 		log.Print("Close socket")
 		c.socket.Close()
 	}()
-	
+
 	for {
 		select {
 		case message, ok := <-c.send:
@@ -148,7 +140,7 @@ func (c *connection) writePump() {
 	}
 }
 
-func handle(s net.Conn) {
+func HandleSocket(s net.Conn) {
 
 	c := &connection{
 		send:   make(chan []byte, 256),
@@ -162,61 +154,24 @@ func handle(s net.Conn) {
 	c.readPump()
 }
 
-/**
- * Provide informations about the connections
- * by accessing the /info route on the bind port
- */
-func info(w http.ResponseWriter, r *http.Request) {
-
-	if r.URL.Path != "/info" {
-		http.Error(w, "Not found", 404)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", 405)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-	connLen := len(h.connections)
-
-	info := fmt.Sprintf("Connections: %s", connLen)
-
-	w.Write([]byte(info))
-
-	w.WriteHeader(200)
-}
-
 func main() {
 
-	port := flag.String("bind", "", "Bind address :9999 or localhost:9999")
-	skipMe = flag.Bool("skipme", true, "Skip me from broadcasting")
-	portInfo := flag.String("bindinfo", "", "Bind address for informations about memory :9991 or localhost:9999")
+	InitConfig()
 
-	flag.Parse()
+	InitLog()
 
-	if *port == "" {
-		fmt.Println("Error: Please specify the bind address with --bind")
-		os.Exit(1)
-	}
+	InitMongo()
 
-	ln, err := net.Listen("tcp", *port)
+	ln, err := net.Listen("tcp", configSocket.BindAddress)
 
 	if err != nil {
-		panic("Fail to listen")
+		die("Fail to listen")
 	}
 
-	if *skipMe {
-		log.Print("Skip me from broadcasting is ON")
-	} else {
-		log.Print("Skip me from broadcasting is OFF")
-	}
+	socketLog.Print("Socket started")
 
 	go h.run()
-
-	http.HandleFunc("/info", info)
-	go http.ListenAndServe(*portInfo, nil)
+	go ApiRouterInit()
 
 	for {
 		conn, err := ln.Accept()
@@ -226,6 +181,6 @@ func main() {
 			continue
 		}
 
-		go handle(conn)
+		go HandleSocket(conn)
 	}
 }
