@@ -1,8 +1,12 @@
 install:
+	# Mongo
 	go get gopkg.in/mgo.v2;
+	# Mongo documents
 	go get gopkg.in/mgo.v2/bson;
-	go get gopkg.in/ini.v1
-	go get github.com/dvsekhvalnov/jose2go
+	# INI
+	go get gopkg.in/ini.v1;
+	# JWT
+	go get github.com/dvsekhvalnov/jose2go;
 run:
 	gofmt -w *.go
 	go run *.go --config=config.ini
