@@ -1,6 +1,16 @@
 # Internal App Backend
 
 ## Installation
+
+### Dependinces
+
+1. Download go https://golang.org/dl/
+
+2. ```sudo apt-get install build-essential``` ( for *make* )
+
+
+### Project setup
+
 In order to start development on this project you need to follow the golang project structure and setup ( https://golang.org/doc/code.html ).
 
 After setup please follow theese steps:
@@ -13,16 +23,12 @@ After setup please follow theese steps:
  
  4. ```git pull origin master```
 
-### Dependinces
-
-1. Download go https://golang.org/dl/
-
-2. ```sudo apt-get install build-essential``` ( for *make* )
-
 
 ## Build & Run
+
 To build the project execute **```make build```** and this will create the binary files in $GOPATH/bin.
 Also if you just want to test the application execute **```make run```**. For more informations about available tasks view *Makefile*
+
 
 ## Servers
 
