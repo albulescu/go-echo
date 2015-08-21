@@ -114,6 +114,10 @@ func (r *Router) Init() {
 	r.routes = make(map[string]Route)
 }
 
+func (r *Router) Shutdown() {
+
+}
+
 func (r *Router) Map(uri string, route Route) {
 	if _, ok := r.routes[uri]; ok {
 		die("Route already registered")

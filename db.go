@@ -7,9 +7,16 @@ import (
 	//"gopkg.in/mgo.v2/bson"
 )
 
-var db *mgo.Database
+type MgoProxy struct {
+	sess *mgo.Session
+	db   *mgo.Database
+}
 
-func InitMongo() {
+func (m *MgoProxy) Close() {
+	m.sess.Close()
+}
+
+func (m *MgoProxy) Init() {
 
 	timeout, err := time.ParseDuration(configDb.Timeout)
 
@@ -37,5 +44,6 @@ func InitMongo() {
 
 	sess.SetMode(mgo.Monotonic, true)
 
-	db = sess.DB(configDb.Database)
+	m.sess = sess
+	m.db = sess.DB(configDb.Database)
 }
